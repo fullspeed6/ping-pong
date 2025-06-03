@@ -1,70 +1,35 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: white;
-  text-align: center;
-  user-select: none;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinball Game with Bumpers & Flippers</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="ui">
+    <div>Score: <span id="score">0</span></div>
+    <div>Lives: <span id="lives">3</span></div>
+  </div>
 
-#ui {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  font-size: 18px;
-  z-index: 10;
-}
+  <canvas id="pinball" width="400" height="600"></canvas>
 
-canvas {
-  display: block;
-  margin: 80px auto 0;
-  background: #111;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #0af;
-  width: 90vw;
-  height: auto;
-  max-width: 600px;
-}
+  <div id="start-screen" class="overlay">
+    <button id="start-btn">Start Game</button>
+  </div>
 
-.overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 20;
-  padding: 20px;
-}
+  <div id="game-over" class="overlay" style="display:none;">
+    <h2>Game Over</h2>
+    <p>Your Score: <span id="final-score">0</span></p>
+    <button id="restart-btn">Restart</button>
+  </div>
 
-button {
-  padding: 12px 30px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 8px;
-  border: none;
-  background: #0af;
-  color: #fff;
-  transition: background 0.3s;
-  margin-top: 10px;
-  width: 80%;
-  max-width: 300px;
-}
+  <div id="mobile-controls">
+    <button id="left-btn">◀</button>
+    <button id="launch-btn">Launch</button>
+    <button id="right-btn">▶</button>
+  </div>
 
-button:hover {
-  background: #08c;
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  #ui {
-    font-size: 16px;
-    left: 5px;
-    top: 5px;
-  }
-
-  button {
-    font-size: 14px;
-  }
-}
+  <script src="script.js"></script>
+</body>
+</html>
