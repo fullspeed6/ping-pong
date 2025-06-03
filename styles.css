@@ -11,7 +11,7 @@ body {
   position: fixed;
   top: 10px;
   left: 10px;
-  font-size: 20px;
+  font-size: 18px;
   z-index: 10;
 }
 
@@ -21,6 +21,9 @@ canvas {
   background: #111;
   border-radius: 10px;
   box-shadow: 0 0 15px #0af;
+  width: 90vw;
+  height: auto;
+  max-width: 600px;
 }
 
 .overlay {
@@ -32,19 +35,44 @@ canvas {
   align-items: center;
   flex-direction: column;
   z-index: 20;
+  padding: 20px;
 }
 
 button {
   padding: 12px 30px;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   border-radius: 8px;
   border: none;
   background: #0af;
   color: #fff;
   transition: background 0.3s;
+  margin-top: 10px;
+  width: 80%;
+  max-width: 300px;
 }
 
 button:hover {
   background: #08c;
+}
+
+#mobile-controls {
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  z-index: 30;
+}
+
+#mobile-controls button {
+  padding: 15px 25px;
+  font-size: 20px;
+  background: #0af;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #08c;
+  flex: 1;
+  margin: 0 5px;
 }
