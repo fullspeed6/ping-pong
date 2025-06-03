@@ -19,7 +19,6 @@ let gameOver = false;
 
 const keys = { left: false, right: false };
 
-// --- Ball class ---
 class Ball {
   constructor(x, y) {
     this.x = x;
@@ -28,7 +27,7 @@ class Ball {
     this.vx = 0;
     this.vy = 0;
     this.launched = false;
-    this.gravity = 0.08; // slower fall
+    this.gravity = 0.08;
   }
   draw() {
     ctx.beginPath();
@@ -49,7 +48,6 @@ class Ball {
     this.x += this.vx;
     this.y += this.vy;
 
-    // Bounce off walls
     if (this.x + this.r > WIDTH) {
       this.x = WIDTH - this.r;
       this.vx *= -1;
@@ -63,36 +61,27 @@ class Ball {
       this.vy *= -1;
     }
 
-    // Fell below screen?
     if (this.y - this.r > HEIGHT) {
       loseBall(this);
     }
 
-    // Bounce off bumpers
     bumpers.forEach(bumper => {
       const dx = this.x - bumper.x;
       const dy = this.y - bumper.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < this.r + bumper.r) {
-        // Bounce ball away from bumper center
         const angle = Math.atan2(dy, dx);
         const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        // Bounce direction away from bumper
         this.vx = Math.cos(angle) * speed * 1.2;
-        this.vy = Math.sin(angle) * speed * 1.2 * -1; // invert vertical speed for bounce
-
-        // Move ball outside bumper to avoid sticking
+        this.vy = Math.sin(angle) * speed * 1.2 * -1;
         const overlap = this.r + bumper.r - dist;
         this.x += Math.cos(angle) * overlap;
         this.y += Math.sin(angle) * overlap;
-
-        // Add score
         score += 10;
         scoreEl.textContent = score;
       }
     });
 
-    // Bounce off flippers
     flippers.forEach(flipper => {
       if (flipper.isColliding(this)) {
         flipper.bounceBall(this);
@@ -101,7 +90,6 @@ class Ball {
   }
 }
 
-// --- Bumper class ---
 class Bumper {
   constructor(x, y, r = 25) {
     this.x = x;
@@ -122,7 +110,6 @@ class Bumper {
   }
 }
 
-// --- Flipper class ---
 class Flipper {
   constructor(x, y, width, height, isLeft) {
     this.x = x;
@@ -130,9 +117,9 @@ class Flipper {
     this.width = width;
     this.height = height;
     this.isLeft = isLeft;
-    this.angle = 0; // radians
-    this.maxAngle = Math.PI / 4; // 45 degrees
-    this.angularSpeed = 0.05; // slower flipper rotation
+    this.angle = 0;
+    this.maxAngle = Math.PI / 4;
+    this.angularSpeed = 0.05;
   }
   draw() {
     ctx.save();
@@ -147,48 +134,31 @@ class Flipper {
   }
   update() {
     if (this.isLeft) {
-      if (keys.left) {
-        if (this.angle < this.maxAngle) this.angle += this.angularSpeed;
-      } else {
-        if (this.angle > 0) this.angle -= this.angularSpeed;
-      }
+      if (keys.left && this.angle < this.maxAngle) this.angle += this.angularSpeed;
+      else if (!keys.left && this.angle > 0) this.angle -= this.angularSpeed;
     } else {
-      if (keys.right) {
-        if (this.angle < this.maxAngle) this.angle += this.angularSpeed;
-      } else {
-        if (this.angle > 0) this.angle -= this.angularSpeed;
-      }
+      if (keys.right && this.angle < this.maxAngle) this.angle += this.angularSpeed;
+      else if (!keys.right && this.angle > 0) this.angle -= this.angularSpeed;
     }
   }
-  // Simple AABB collision for flipper rectangle rotated by angle
   isColliding(ball) {
-    // Transform ball pos into flipper coordinate space
     let relX = ball.x - this.x;
     let relY = ball.y - this.y;
     let angle = this.isLeft ? -this.angle : this.angle;
-
     let cosA = Math.cos(-angle);
     let sinA = Math.sin(-angle);
-
     let localX = relX * cosA - relY * sinA;
     let localY = relX * sinA + relY * cosA;
-
-    // Check collision with flipper rect (0,width) x (-height/2,height/2)
-    if (
+    return (
       localX > 0 &&
       localX < this.width &&
       localY > -this.height / 2 - ball.r &&
       localY < this.height / 2 + ball.r
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
   bounceBall(ball) {
-    // Reflect ball velocity upwards and a bit sideways depending on flipper angle
     ball.vy = -Math.abs(ball.vy) * 1.5;
     ball.vx += this.isLeft ? -2 : 2;
-    // Move ball outside flipper to prevent sticking
     if (this.isLeft) ball.x = this.x + this.width + ball.r;
     else ball.x = this.x - ball.r;
   }
@@ -202,8 +172,8 @@ const bumpers = [
 ];
 
 const flippers = [
-  new Flipper(120, HEIGHT - 50, 80, 15, true), // left flipper
-  new Flipper(WIDTH - 120 - 80, HEIGHT - 50, 80, 15, false), // right flipper
+  new Flipper(120, HEIGHT - 50, 80, 15, true),
+  new Flipper(WIDTH - 120 - 80, HEIGHT - 50, 80, 15, false),
 ];
 
 function loseBall(ball) {
@@ -244,12 +214,8 @@ function startGame() {
   animate();
 }
 
-restartBtn.addEventListener('click', () => {
-  startGame();
-});
-startBtn.addEventListener('click', () => {
-  startGame();
-});
+restartBtn.addEventListener('click', () => startGame());
+startBtn.addEventListener('click', () => startGame());
 
 function clearCanvas() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -258,32 +224,23 @@ function clearCanvas() {
 function animate() {
   if (!gameStarted) return;
   clearCanvas();
-
   bumpers.forEach(b => b.draw());
   flippers.forEach(f => {
     f.update();
     f.draw();
   });
-
   balls.forEach(ball => {
     ball.update();
     ball.draw();
   });
-
-  if (!gameOver) {
-    requestAnimationFrame(animate);
-  }
+  if (!gameOver) requestAnimationFrame(animate);
 }
 
-// Controls: space to launch, left/right arrows for flippers
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space' && gameStarted && balls.length > 0) {
-    let ball = balls[0];
-    if (!ball.launched) {
-      ball.vx = 0;
-      ball.vy = -3; // slower launch velocity
-      ball.launched = true;
-    }
+  if (e.code === 'Space' && gameStarted && balls.length > 0 && !balls[0].launched) {
+    balls[0].vx = 0;
+    balls[0].vy = -3;
+    balls[0].launched = true;
   }
   if (e.code === 'ArrowLeft') keys.left = true;
   if (e.code === 'ArrowRight') keys.right = true;
@@ -291,4 +248,17 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
   if (e.code === 'ArrowLeft') keys.left = false;
   if (e.code === 'ArrowRight') keys.right = false;
+});
+
+// Touch controls for mobile
+document.getElementById('left-btn').addEventListener('touchstart', () => keys.left = true);
+document.getElementById('left-btn').addEventListener('touchend', () => keys.left = false);
+document.getElementById('right-btn').addEventListener('touchstart', () => keys.right = true);
+document.getElementById('right-btn').addEventListener('touchend', () => keys.right = false);
+document.getElementById('launch-btn').addEventListener('touchstart', () => {
+  if (gameStarted && balls.length > 0 && !balls[0].launched) {
+    balls[0].vx = 0;
+    balls[0].vy = -3;
+    balls[0].launched = true;
+  }
 });
