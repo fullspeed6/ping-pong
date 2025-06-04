@@ -7,29 +7,35 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Score and Lives UI -->
   <div id="ui">
     <div>Score: <span id="score">0</span></div>
     <div>Lives: <span id="lives">3</span></div>
   </div>
 
+  <!-- Game Canvas -->
   <canvas id="pinball" width="400" height="600"></canvas>
 
+  <!-- Start Screen Overlay -->
   <div id="start-screen" class="overlay">
     <button id="start-btn">Start Game</button>
   </div>
 
+  <!-- Game Over Overlay -->
   <div id="game-over" class="overlay" style="display:none;">
     <h2>Game Over</h2>
     <p>Your Score: <span id="final-score">0</span></p>
     <button id="restart-btn">Restart</button>
   </div>
 
+  <!-- Mobile Controls -->
   <div id="mobile-controls">
     <button id="left-btn">◀</button>
     <button id="launch-btn">Launch</button>
     <button id="right-btn">▶</button>
   </div>
 
+  <!-- Main Game Script -->
   <script src="script.js"></script>
 </body>
 </html>
