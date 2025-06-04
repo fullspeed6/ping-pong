@@ -19,6 +19,7 @@ let gameOver = false;
 
 const keys = { left: false, right: false };
 
+// --- Ball class ---
 class Ball {
   constructor(x, y) {
     this.x = x;
@@ -27,7 +28,7 @@ class Ball {
     this.vx = 0;
     this.vy = 0;
     this.launched = false;
-    this.gravity = 0.08;
+    this.gravity = 0.04; // slowed gravity
   }
   draw() {
     ctx.beginPath();
@@ -72,8 +73,8 @@ class Ball {
       if (dist < this.r + bumper.r) {
         const angle = Math.atan2(dy, dx);
         const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        this.vx = Math.cos(angle) * speed * 1.2;
-        this.vy = Math.sin(angle) * speed * 1.2 * -1;
+        this.vx = Math.cos(angle) * speed * 0.6;
+        this.vy = Math.sin(angle) * speed * 0.6 * -1;
         const overlap = this.r + bumper.r - dist;
         this.x += Math.cos(angle) * overlap;
         this.y += Math.sin(angle) * overlap;
@@ -90,6 +91,7 @@ class Ball {
   }
 }
 
+// --- Bumper class ---
 class Bumper {
   constructor(x, y, r = 25) {
     this.x = x;
@@ -110,6 +112,7 @@ class Bumper {
   }
 }
 
+// --- Flipper class ---
 class Flipper {
   constructor(x, y, width, height, isLeft) {
     this.x = x;
@@ -119,7 +122,7 @@ class Flipper {
     this.isLeft = isLeft;
     this.angle = 0;
     this.maxAngle = Math.PI / 4;
-    this.angularSpeed = 0.05;
+    this.angularSpeed = 0.025; // slowed flipper speed
   }
   draw() {
     ctx.save();
@@ -157,8 +160,8 @@ class Flipper {
     );
   }
   bounceBall(ball) {
-    ball.vy = -Math.abs(ball.vy) * 1.5;
-    ball.vx += this.isLeft ? -2 : 2;
+    ball.vy = -Math.abs(ball.vy) * 0.75;
+    ball.vx += this.isLeft ? -1 : 1;
     if (this.isLeft) ball.x = this.x + this.width + ball.r;
     else ball.x = this.x - ball.r;
   }
@@ -239,7 +242,7 @@ function animate() {
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' && gameStarted && balls.length > 0 && !balls[0].launched) {
     balls[0].vx = 0;
-    balls[0].vy = -3;
+    balls[0].vy = -1.5;
     balls[0].launched = true;
   }
   if (e.code === 'ArrowLeft') keys.left = true;
@@ -250,7 +253,6 @@ document.addEventListener('keyup', e => {
   if (e.code === 'ArrowRight') keys.right = false;
 });
 
-// Touch controls for mobile
 document.getElementById('left-btn').addEventListener('touchstart', () => keys.left = true);
 document.getElementById('left-btn').addEventListener('touchend', () => keys.left = false);
 document.getElementById('right-btn').addEventListener('touchstart', () => keys.right = true);
@@ -258,7 +260,7 @@ document.getElementById('right-btn').addEventListener('touchend', () => keys.rig
 document.getElementById('launch-btn').addEventListener('touchstart', () => {
   if (gameStarted && balls.length > 0 && !balls[0].launched) {
     balls[0].vx = 0;
-    balls[0].vy = -3;
+    balls[0].vy = -1.5;
     balls[0].launched = true;
   }
 });
