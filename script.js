@@ -19,7 +19,6 @@ let gameOver = false;
 
 const keys = { left: false, right: false };
 
-// --- Ball class ---
 class Ball {
   constructor(x, y) {
     this.x = x;
@@ -28,7 +27,7 @@ class Ball {
     this.vx = 0;
     this.vy = 0;
     this.launched = false;
-    this.gravity = 0.04; // slowed gravity
+    this.gravity = 0.04; // slower gravity
   }
   draw() {
     ctx.beginPath();
@@ -91,7 +90,6 @@ class Ball {
   }
 }
 
-// --- Bumper class ---
 class Bumper {
   constructor(x, y, r = 25) {
     this.x = x;
@@ -112,7 +110,6 @@ class Bumper {
   }
 }
 
-// --- Flipper class ---
 class Flipper {
   constructor(x, y, width, height, isLeft) {
     this.x = x;
@@ -122,7 +119,7 @@ class Flipper {
     this.isLeft = isLeft;
     this.angle = 0;
     this.maxAngle = Math.PI / 4;
-    this.angularSpeed = 0.025; // slowed flipper speed
+    this.angularSpeed = 0.025;
   }
   draw() {
     ctx.save();
@@ -174,9 +171,10 @@ const bumpers = [
   new Bumper(300, 450),
 ];
 
+// ⬆ Flippers moved up from HEIGHT - 50 to HEIGHT - 150
 const flippers = [
-  new Flipper(120, HEIGHT - 50, 80, 15, true),
-  new Flipper(WIDTH - 120 - 80, HEIGHT - 50, 80, 15, false),
+  new Flipper(120, HEIGHT - 150, 80, 15, true),
+  new Flipper(WIDTH - 120 - 80, HEIGHT - 150, 80, 15, false),
 ];
 
 function loseBall(ball) {
@@ -242,7 +240,7 @@ function animate() {
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' && gameStarted && balls.length > 0 && !balls[0].launched) {
     balls[0].vx = 0;
-    balls[0].vy = -1.5;
+    balls[0].vy = -2; // slightly faster for reliable launch
     balls[0].launched = true;
   }
   if (e.code === 'ArrowLeft') keys.left = true;
@@ -260,7 +258,7 @@ document.getElementById('right-btn').addEventListener('touchend', () => keys.rig
 document.getElementById('launch-btn').addEventListener('touchstart', () => {
   if (gameStarted && balls.length > 0 && !balls[0].launched) {
     balls[0].vx = 0;
-    balls[0].vy = -1.5;
+    balls[0].vy = -2; // slightly faster for reliable launch
     balls[0].launched = true;
   }
 });
